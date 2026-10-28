@@ -1,0 +1,199 @@
+:root {
+  --blue: #1d4ed8;
+  --blue-soft: #eff4ff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --warn-bg: #fff7e6;
+  --warn-line: #f0c36d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 340px;
+  margin: 0;
+  font: 13px/1.45 -apple-system, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+}
+
+header {
+  padding: 12px 14px 8px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Статус: активный профиль + предупреждение о расхождении */
+
+.status { padding: 0 14px; }
+
+.status .hint {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  color: #33415e;
+}
+
+.status .hint.warn {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+}
+
+.active-line { padding: 2px 0 6px; color: var(--muted); }
+.active-line b { color: var(--text); }
+
+.diff {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border: 1px solid var(--warn-line);
+  border-radius: 8px;
+  background: var(--warn-bg);
+}
+
+.diff-text { display: block; margin-bottom: 6px; }
+
+/* Список профилей */
+
+.list {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0 10px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border-radius: 8px;
+}
+
+.row:hover { background: #f5f6f8; }
+
+.row.active { background: var(--blue-soft); }
+.row.active .name { color: var(--blue); }
+
+.row .main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 7px 8px;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.row .name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 550;
+}
+
+.row .meta { font-size: 11px; color: var(--muted); }
+
+.row .icon {
+  border: 0;
+  background: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.55;
+}
+
+.row .icon:hover { background: #e8eaef; opacity: 1; }
+.row .icon.armed { opacity: 1; background: #fee2e2; }
+
+.row .rename-input {
+  flex: 1;
+  margin: 5px 8px;
+  padding: 5px 8px;
+  border: 1px solid var(--blue);
+  border-radius: 6px;
+  font: inherit;
+}
+
+/* Создание профиля */
+
+.create {
+  display: flex;
+  gap: 6px;
+  padding: 8px 14px 4px;
+}
+
+.create input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.create input:focus { outline: none; border-color: var(--blue); }
+
+button.primary {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--blue);
+  color: #fff;
+  font: inherit;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+button.primary:hover { background: #1e40af; }
+
+button.danger {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+button.danger:hover { border-color: #f87171; color: #b91c1c; }
+
+/* Сообщения и подвал */
+
+.flash {
+  min-height: 18px;
+  padding: 4px 14px 0;
+  font-size: 12px;
+  color: #15803d;
+  visibility: hidden;
+}
+
+.flash.show { visibility: visible; }
+.flash.err { color: #b91c1c; }
+
+footer {
+  padding: 8px 14px 12px;
+  border-top: 1px solid var(--line);
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+footer a { color: var(--blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.sep { margin: 0 4px; }
+.usage { margin-top: 6px; font-size: 11px; }
+.usage.warn { color: #b45309; }
+
+body.busy .list, body.busy .create { opacity: 0.5; pointer-events: none; }

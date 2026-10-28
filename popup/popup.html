@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Профили закладок</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>Профили закладок</h1>
+  </header>
+
+  <div id="status" class="status"></div>
+
+  <ul id="list" class="list"></ul>
+
+  <div class="create">
+    <input id="newName" type="text" placeholder="Название, например «Работа»" maxlength="60">
+    <button id="createBtn" class="primary" title="Сохранить текущую панель закладок как профиль">Создать</button>
+  </div>
+
+  <div id="flash" class="flash"></div>
+
+  <footer>
+    <a href="#" id="help">Как это работает</a>
+    <span class="sep">·</span>
+    <a href="#" id="exportBtn">Экспорт</a>
+    <span class="sep">·</span>
+    <a href="#" id="importBtn">Импорт</a>
+    <input id="importFile" type="file" accept=".json,application/json" hidden>
+    <div id="usage" class="usage"></div>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
