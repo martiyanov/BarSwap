@@ -7,6 +7,7 @@ import {
   getActiveId, setActiveId, countBookmarks,
 } from './lib/store.js';
 import { readBar, applyToBar, sameNodes } from './lib/bookmarks.js';
+import { pushBackup, listBackups, getBackup } from './lib/backups.js';
 
 const msg = (key, subs) => chrome.i18n.getMessage(key, subs);
 
@@ -48,6 +49,7 @@ async function handle(m) {
     case 'rename': return renameProfile(m.id, m.name);
     case 'export': return exportData();
     case 'import': return importData(m.payload);
+    case 'restoreBackup': return restoreBackup(m.id);
     default: throw new Error(msg('errUnknownCommand', [m.type]));
   }
 }
@@ -67,7 +69,8 @@ async function getState() {
 
   const quota = chrome.storage.sync.QUOTA_BYTES || 102400;
   const used = await chrome.storage.sync.getBytesInUse(null);
-  return { profiles, activeId: activeId && index.profiles[activeId] ? activeId : null, barDiffers, used, quota };
+  const backups = await listBackups();
+  return { profiles, activeId: activeId && index.profiles[activeId] ? activeId : null, barDiffers, used, quota, backups };
 }
 
 async function switchTo(id) {
@@ -81,10 +84,20 @@ async function switchTo(id) {
   }
   if (id === activeId) return { message: msg('msgAlreadyActive') };
 
+  // Резервная копия ДО любых изменений: панель как есть + прежнее содержимое
+  // профиля, который сейчас будет перезаписан текущей панелью.
+  const barBefore = await readBar();
+  const prevProfile = await getProfile(activeId);
+  await pushBackup({
+    label: msg('bkBeforeSwitch', [index.profiles[activeId].name, target.name]),
+    barNodes: barBefore,
+    profileBefore: prevProfile ? { id: activeId, name: prevProfile.name, nodes: prevProfile.nodes } : null,
+  });
+
   // Текущая панель — это правки пользователя с момента прошлого переключения:
   // фиксируем её в активный профиль ДО каких-либо изменений панели.
   // Если запись не удалась (например, квота), панель останется нетронутой.
-  await saveProfile(activeId, index.profiles[activeId].name, await readBar());
+  await saveProfile(activeId, index.profiles[activeId].name, barBefore);
 
   const profile = await getProfile(id);
   await applyToBar(profile.nodes);
@@ -123,8 +136,23 @@ async function restoreActive() {
   const activeId = await getActiveId();
   const profile = activeId ? await getProfile(activeId) : null;
   if (!profile) throw new Error(msg('errNoActiveProfile'));
+  await pushBackup({ label: msg('bkBeforeRestore'), barNodes: await readBar() });
   await applyToBar(profile.nodes);
   return { message: msg('msgRestoredBar') };
+}
+
+// Возврат панели (и перезаписанного профиля, если он есть) из резервной копии.
+async function restoreBackup(id) {
+  const backup = await getBackup(id);
+  if (!backup) throw new Error(msg('errBackupNotFound'));
+  // сам возврат тоже обратим: копируем текущее состояние перед ним
+  await pushBackup({ label: msg('bkBeforeBackupRestore'), barNodes: await readBar() });
+  await applyToBar(backup.barNodes);
+  if (backup.profileBefore) {
+    await saveProfile(backup.profileBefore.id, backup.profileBefore.name, backup.profileBefore.nodes);
+  }
+  await refreshBadge();
+  return { message: msg('msgBackupRestored') };
 }
 
 async function removeProfile(id) {

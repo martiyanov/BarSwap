@@ -71,6 +71,7 @@ function render() {
   if (!d) return;
   renderStatus(d);
   renderList(d);
+  renderBackups(d);
   renderUsage(d);
 }
 
@@ -173,6 +174,38 @@ function renderList(d) {
   }
 }
 
+function renderBackups(d) {
+  const box = $('backups');
+  box.textContent = '';
+  if (!d.backups || !d.backups.length) return;
+
+  const h = document.createElement('h2');
+  h.textContent = msg('backupsTitle');
+  const note = div('note');
+  note.textContent = msg('backupsNote');
+  box.append(h, note);
+
+  for (const b of d.backups) {
+    const li = document.createElement('div');
+    li.className = 'row';
+
+    const main = button('main');
+    const nameEl = span('name');
+    nameEl.textContent = b.label;
+    const metaEl = span('meta');
+    metaEl.textContent = msg('backupMeta', [String(b.barCount), fmtDateTime(b.ts)]);
+    main.append(nameEl, metaEl);
+    main.title = b.hasProfileBefore
+      ? msg('backupRestoreBtn') + ' — ' + msg('backupsTitle')
+      : msg('backupRestoreBtn');
+
+    const restoreBtn = button('primary', msg('backupRestoreBtn'));
+    restoreBtn.addEventListener('click', () => arm('bk:' + b.id, restoreBtn, () => act('restoreBackup', { id: b.id })));
+    li.append(main, restoreBtn);
+    box.appendChild(li);
+  }
+}
+
 function renderUsage(d) {
   const el = $('usage');
   const kb = Math.max(0, Math.round(d.used / 1024));
@@ -257,6 +290,10 @@ function flash(text, isErr = false) {
 
 function fmtDate(ts) {
   return new Date(ts).toLocaleDateString(chrome.i18n.getUILanguage(), { day: 'numeric', month: 'short' });
+}
+
+function fmtDateTime(ts) {
+  return new Date(ts).toLocaleString(chrome.i18n.getUILanguage(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
 
 function div(className) {

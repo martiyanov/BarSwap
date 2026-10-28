@@ -86,6 +86,30 @@
     "message": "Not enough space in the synced profile storage (~100 KB limit for all profiles). Delete unneeded profiles or reduce the number of bookmarks in them."
   },
 
+  "backupsTitle": { "message": "Backups" },
+  "backupsNote": {
+    "message": "Created automatically before every bar replacement. Kept on this computer only, last 10."
+  },
+  "backupRestoreBtn": { "message": "Restore" },
+  "backupMeta": {
+    "message": "$count$ bookmarks · $when$",
+    "placeholders": {
+      "count": { "content": "$1" },
+      "when": { "content": "$2" }
+    }
+  },
+  "bkBeforeSwitch": {
+    "message": "Before switching “$from$” → “$to$”",
+    "placeholders": {
+      "from": { "content": "$1" },
+      "to": { "content": "$2" }
+    }
+  },
+  "bkBeforeRestore": { "message": "Before restoring a profile" },
+  "bkBeforeBackupRestore": { "message": "Before restoring a backup copy" },
+  "msgBackupRestored": { "message": "Bar restored from a backup copy" },
+  "errBackupNotFound": { "message": "Backup copy not found" },
+
   "wTitle": { "message": "BarSwap — getting started" },
   "wH1": { "message": "BarSwap" },
   "wSub": {
@@ -134,5 +158,5 @@
   "wIntLi3": {
     "message": "The extension sends data nowhere except Chrome sync; no ads, no analytics."
   },
-  "wIntLi4": { "message": "JSON Export/Import is available for backups." }
+  "wIntLi4": { "message": "Before every switch, the bar is automatically saved to a backup copy (kept on this computer). JSON export/import is also available." }
 }

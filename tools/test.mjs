@@ -76,6 +76,7 @@ globalThis.chrome = { storage: { sync: makeArea(), local: makeArea() }, bookmark
 
 const store = await import('../lib/store.js');
 const bm = await import('../lib/bookmarks.js');
+const backups = await import('../lib/backups.js');
 
 // ---------- helpers ----------
 let passed = 0;
@@ -192,6 +193,36 @@ await test('activeProfileId — локальный флаг', async () => {
   assert.equal(await store.getActiveId(), null);
 });
 
+await test('резервные копии: запись, чтение, кольцевой буфер', async () => {
+  const nodesA = [{ t: 'A', u: 'https://a.example' }, { t: 'Папка', c: [{ t: 'Глубоко', u: 'https://deep.example' }] }];
+  const nodesB = makeNodes('бэкап', 50);
+  await backups.pushBackup({ label: 'первый', barNodes: nodesA, profileBefore: { id: 'p1', name: 'Дом', nodes: nodesB } });
+  await backups.pushBackup({ label: 'второй', barNodes: nodesB });
+
+  const list = await backups.listBackups();
+  assert.equal(list.length, 2);
+  assert.equal(list[0].label, 'второй'); // свежие сверху
+  assert.equal(list[0].barCount, 50);
+  assert.equal(list[1].barCount, 2);
+  assert.equal(list[1].hasProfileBefore, true);
+  assert.equal(list[0].hasProfileBefore, false);
+
+  const full = await backups.getBackup(list[1].id);
+  assert.deepEqual(full.barNodes, nodesA);
+  assert.deepEqual(full.profileBefore.nodes, nodesB);
+  assert.equal(full.profileBefore.id, 'p1');
+  assert.equal(await backups.getBackup('нет-такого'), null);
+
+  // кольцевой буфер: не больше 10, старые вытесняются
+  for (let i = 0; i < 12; i++) {
+    await backups.pushBackup({ label: 'копия ' + i, barNodes: nodesA });
+  }
+  const after = await backups.listBackups();
+  assert.equal(after.length, 10);
+  assert.equal(after[0].label, 'копия 11');
+  assert.equal(after[9].label, 'копия 2', '«первый»/«второй» должны быть вытеснены');
+});
+
 await test('сценарий пользователя: работа/дом на двух машинах', async () => {
   const work = [{ t: 'Jira', u: 'https://jira.example' }, { t: 'GitLab', u: 'https://git.example' }];
   const home = [{ t: 'YouTube', u: 'https://youtube.com' }];
@@ -240,4 +271,4 @@ await test('сценарий пользователя: работа/дом на 
   assert.deepEqual(await bm.readBar(), home);
 });
 
-console.log(passed === 7 ? '\nВсе тесты пройдены ✔' : '\nЕсть падения ✘');
+console.log(passed === 8 ? '\nВсе тесты пройдены ✔' : '\nЕсть падения ✘');

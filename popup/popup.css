@@ -169,6 +169,27 @@ button.danger {
 
 button.danger:hover { border-color: #f87171; color: #b91c1c; }
 
+/* Резервные копии */
+
+.backups { padding: 6px 14px 0; }
+
+.backups h2 {
+  margin: 6px 0 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.backups .note { font-size: 11px; color: var(--muted); margin: 0 0 4px; }
+
+.backups .row { padding: 0 2px; }
+
+.backups .row .main { padding: 5px 6px; }
+
+.backups .row .meta { font-size: 11px; }
+
 /* Сообщения и подвал */
 
 .flash {
