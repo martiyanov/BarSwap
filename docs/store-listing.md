@@ -1,4 +1,4 @@
-# Публикация в Chrome Web Store — шпаргалка
+# Публикация BarSwap в Chrome Web Store — шпаргалка
 
 Всё готово к загрузке. Ниже — готовые тексты на двух языках (копировать/вставить) и шаги.
 
@@ -6,24 +6,31 @@
 
 1. Откройте [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) под вашим Google-аккаунтом.
 2. При первом входе: подтвердите согласие с условиями и заплатите **разовый взнос $5** (картой; действует на все будущие расширения).
-3. Кнопка **«+ Новый элемент»** → загрузите файл **`bookmark-profiles-webstore.zip`** (лежит рядом с папкой проекта).
+3. Кнопка **«+ Новый элемент»** → загрузите файл **`bookmark-profiles-webstore.zip`** (лежит рядом с папкой проекта; при желании переименуйте в `barswap-webstore.zip`).
 4. Заполните поля: сначала русский листинг (раздел ниже), затем добавьте английский — в списке полей найдите выбор языка и кнопку добавления языка, вставьте тексты из раздела «English listing».
 5. Внизу формы нажмите **«Отправить на проверку»**. Проверка обычно занимает от нескольких часов до нескольких дней.
 6. После одобрения установите расширение из магазина **на обоих компьютерах** (версия из магазина синхронизируется с аккаунтом сама) и удалите «распакованную», если ставили её.
 
 ## Листинг, русский (основной язык)
 
-- **Название:** Профили закладок — работа и дом
+- **Название:** BarSwap — переключение панелей закладок
 - **Краткое описание (до 132 знаков):**
-  Несколько наборов закладок на панели: на работе — одни, дома — другие, при одной учётной записи. Переключение в один клик.
+  Сколько угодно наборов закладок на панели — работа, дом, проекты. Переключение в один клик при одной учётной записи.
 - **Подробное описание:**
 
   ```
-  Свои закладки на работе, свои — дома, при одном аккаунте Google.
+  BarSwap — сколько угодно наборов закладок на панели при одном аккаунте Google.
+
+  Зачем:
+  • Работа и дом: на работе — рабочая панель, дома — личная, аккаунт один.
+  • Фриланс: отдельная панель под каждого клиента.
+  • Демонстрация экрана: «презентационная» чистая панель — личные закладки не светятся на созвонах и записях.
+  • Общий компьютер: детский режим с разрешёнными сайтами.
+  • Проекты и сезоны: «Ремонт», «Отпуск», «Поиск работы» — включил нужную панель и работай.
 
   Как работает:
   • Профили (наборы закладок) синхронизируются с вашим аккаунтом и доступны на всех компьютерах.
-  • Какой профиль активен — запоминается на каждом компьютере отдельно: на работе горит «Работа», дома — «Дом».
+  • Какой профиль активен — запоминается на каждом компьютере отдельно.
   • При переключении текущая панель автоматически сохраняется в свой профиль — правки не теряются.
 
   Возможности:
@@ -45,17 +52,24 @@
 
 ## English listing (добавить вторым языком в форме)
 
-- **Name:** Bookmark Profiles — work & home
+- **Name:** BarSwap — switch bookmark bars
 - **Summary (≤132 chars):**
-  Several bookmark bar sets under one Google account: work links at the office, personal ones at home. One-click switching.
+  As many bookmark bar sets as you need — work, home, projects. One-click switching under one Google account.
 - **Detailed description:**
 
   ```
-  Your work bookmarks at the office, your personal ones at home — under a single Google account.
+  BarSwap — as many bookmark bar sets as you like, under a single Google account.
+
+  Why:
+  • Work and home: the work bar at the office, the personal one at home — same account.
+  • Freelancing: a separate bar for every client.
+  • Screen sharing: a clean “presentation” bar, so personal bookmarks never show up in calls and recordings.
+  • Shared computer: a kids mode with only allowed sites.
+  • Projects and seasons: “Renovation”, “Vacation”, “Job hunt” — switch to the bar you need.
 
   How it works:
   • Profiles (bookmark sets) sync with your account and are available on every computer.
-  • Which profile is active is remembered per computer: “Work” at the office, “Home” at home.
+  • Which profile is active is remembered per computer.
   • On switching, the current bar is automatically saved back to its own profile — nothing is lost.
 
   Features:
@@ -82,7 +96,7 @@
   `docs/screenshots/screenshot-en-1.png`, `docs/screenshots/screenshot-en-2.png`.
   Русская пара лежит рядом (`screenshot-1.png`, `screenshot-2.png`) — если хотите, загрузите её вместо английской.
 - **Иконка 128×128:** `icons/icon128.png`
-- **Ссылка на сайт:** URL репозитория на GitHub (после публикации репозитория)
+- **Ссылка на сайт:** https://github.com/martiyanov/BarSwap
 - **Промо-изображения:** необязательны (маленькая плитка 440×280 может увеличить показы — можно сгенерировать позже)
 
 ## Вкладка «Конфиденциальность»
@@ -93,7 +107,7 @@
 - **Использование данных** (галочки «собираются/не собираются»):
   - Данные не собираются. Не продаются. Не передаются третьим лицам. Не используются для рекламы/кредитования/идентификации.
   - Расширение не совершает сетевых запросов; код открыт.
-- **Политика конфиденциальности (URL):** ссылка на `PRIVACY.md` в репозитории.
+- **Политика конфиденциальности (URL):** https://github.com/martiyanov/BarSwap/blob/main/PRIVACY.md
 
 ## Вкладка «Распространение»
 

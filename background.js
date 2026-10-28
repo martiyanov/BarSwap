@@ -148,7 +148,7 @@ async function exportData() {
     const profile = await getProfile(id);
     if (profile) out.push({ name: profile.name, nodes: profile.nodes });
   }
-  return JSON.stringify({ app: 'bookmark-profiles', version: 1, exported: new Date().toISOString(), profiles: out }, null, 2);
+  return JSON.stringify({ app: 'barswap', version: 1, exported: new Date().toISOString(), profiles: out }, null, 2);
 }
 
 async function importData(text) {

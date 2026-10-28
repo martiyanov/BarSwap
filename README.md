@@ -1,7 +1,10 @@
-# Профили закладок (Chrome-расширение)
+# BarSwap (Chrome-расширение)
 
-Несколько наборов закладок на панели закладок Chrome — одни на работе, другие
-дома — при **одной** учётной записи Google.
+Репозиторий: <https://github.com/martiyanov/BarSwap>
+
+Несколько наборов закладок на панели закладок Chrome — работа, дом, проекты,
+клиенты, «презентационная» панель для демонстрации экрана — при **одной**
+учётной записи Google.
 
 - **Наборы (профили) хранятся в `chrome.storage.sync`** — синхронизируются вместе
   с аккаунтом и одинаковы на всех компьютерах.
@@ -79,7 +82,7 @@ tools/demo.html    — демо попапа для скриншотов (?state
 
 ## English
 
-**Bookmark Profiles** — a Chrome extension (Manifest V3) that keeps several
+**BarSwap** — a Chrome extension (Manifest V3) that keeps several
 bookmark-bar sets under a single Google account: e.g. work links at the office,
 personal links at home.
 

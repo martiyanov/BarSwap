@@ -1,12 +1,12 @@
 {
   "extName": {
-    "message": "Bookmark Profiles — work & home"
+    "message": "BarSwap — switch bookmark bars"
   },
   "extDesc": {
-    "message": "Several bookmark bar sets under one Google account: work links at the office, personal ones at home. One-click switching."
+    "message": "As many bookmark bar sets as you need — work, home, projects. One-click switching under one Google account."
   },
 
-  "popupH1": { "message": "Bookmark Profiles" },
+  "popupH1": { "message": "BarSwap" },
   "newNamePlaceholder": { "message": "Name, e.g. “Work”" },
   "createBtn": { "message": "Create" },
   "createBtnTitle": { "message": "Save the current bookmarks bar as a profile" },
@@ -83,8 +83,8 @@
   },
   "errBarNotFound": { "message": "Could not find the bookmarks bar" },
 
-  "wTitle": { "message": "Bookmark Profiles — getting started" },
-  "wH1": { "message": "Bookmark Profiles" },
+  "wTitle": { "message": "BarSwap — getting started" },
+  "wH1": { "message": "BarSwap" },
   "wSub": {
     "message": "Several bookmark bar sets: work links at the office, personal ones at home — under a single Google account."
   },

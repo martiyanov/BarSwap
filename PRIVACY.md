@@ -2,7 +2,7 @@
 
 ## Русский
 
-Расширение «Профили закладок»:
+Расширение BarSwap:
 
 - **Не собирает** аналитику, телеметрию или какие-либо данные о просмотренных страницах.
 - **Не отправляет** данные на серверы разработчика: в коде нет ни одного сетевого запроса.
@@ -16,7 +16,7 @@
 
 ## English
 
-The "Bookmark Profiles" extension:
+The "BarSwap" extension:
 
 - Collects **no** analytics, telemetry, or browsing data.
 - Makes **no** network requests: the code contains none.
