@@ -1,12 +1,13 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Демо попапа «Профили закладок»</title>
   <!--
     Демо-страница попапа для скриншотов листинга Chrome Web Store.
-    Мок chrome.* определяется ДО подключения popup.js (модули исполняются позже
-    обычных скриптов). Состояние выбирается через ?state=normal|diff|empty.
+    Параметры: ?state=normal|diff|empty и ?lang=en|ru.
+    Словарь i18n берётся из настоящих _locales/<lang>/messages.json,
+    затем динамически подключается popup.js — как в реальном расширении.
   -->
   <link rel="stylesheet" href="../popup/popup.css">
   <style>
@@ -35,7 +36,7 @@
   <div class="stage">
     <div class="popup-box">
       <header>
-        <h1>Профили закладок</h1>
+        <h1 data-i18n="popupH1">Bookmark Profiles</h1>
       </header>
 
       <div id="status" class="status"></div>
@@ -43,18 +44,18 @@
       <ul id="list" class="list"></ul>
 
       <div class="create">
-        <input id="newName" type="text" placeholder="Название, например «Работа»" maxlength="60">
-        <button id="createBtn" class="primary" title="Сохранить текущую панель закладок как профиль">Создать</button>
+        <input id="newName" type="text" data-i18n-placeholder="newNamePlaceholder" maxlength="60">
+        <button id="createBtn" class="primary" data-i18n="createBtn" data-i18n-title="createBtnTitle">Create</button>
       </div>
 
       <div id="flash" class="flash"></div>
 
       <footer>
-        <a href="#" id="help">Как это работает</a>
+        <a href="#" id="help" data-i18n="helpLink">How it works</a>
         <span class="sep">·</span>
-        <a href="#" id="exportBtn">Экспорт</a>
+        <a href="#" id="exportBtn" data-i18n="exportLink">Export</a>
         <span class="sep">·</span>
-        <a href="#" id="importBtn">Импорт</a>
+        <a href="#" id="importBtn" data-i18n="importLink">Import</a>
         <input id="importFile" type="file" accept=".json,application/json" hidden>
         <div id="usage" class="usage"></div>
       </footer>
@@ -62,54 +63,82 @@
   </div>
 
   <script>
-    const mode = new URLSearchParams(location.search).get('state') || 'normal';
-    const day = 86400000;
-    const states = {
-      normal: {
-        profiles: [
-          { id: 'pw', name: 'Дом', count: 14, updated: Date.now() - 2 * day },
-          { id: 'ph', name: 'Работа', count: 21, updated: Date.now() - 5 * 3600000 },
-          { id: 'pp', name: 'Ремонт кухни', count: 6, updated: Date.now() - 9 * day },
-        ],
-        activeId: 'ph',
-        barDiffers: false,
-        barCount: 21,
-        used: 12 * 1024,
-        quota: 102400,
-      },
-      diff: {
-        profiles: [
-          { id: 'pw', name: 'Дом', count: 14, updated: Date.now() - 2 * day },
-          { id: 'ph', name: 'Работа', count: 19, updated: Date.now() - 5 * 3600000 },
-        ],
-        activeId: 'ph',
-        barDiffers: true,
-        barCount: 21,
-        used: 12 * 1024,
-        quota: 102400,
-      },
-      empty: {
-        profiles: [],
-        activeId: null,
-        barDiffers: null,
-        barCount: 3,
-        used: 0,
-        quota: 102400,
-      },
-    };
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const mode = params.get('state') || 'normal';
+      const lang = params.get('lang') === 'ru' ? 'ru' : 'en';
 
-    window.chrome = {
-      runtime: {
-        getURL: (p) => p,
-        sendMessage: async (msg) => {
-          if (msg.type === 'getState') return { ok: true, result: states[mode] };
-          return { ok: true, result: { message: 'Готово' } };
+      const dict = await (await fetch(`../_locales/${lang}/messages.json`)).json();
+      function getMessage(key, subs = []) {
+        const entry = dict[key];
+        if (!entry) return key;
+        let text = entry.message;
+        if (entry.placeholders) {
+          for (const [name, ph] of Object.entries(entry.placeholders)) {
+            const idx = Number(String(ph.content).replace(/\$/g, '')) - 1;
+            text = text.split(`$${name}$`).join(subs[idx] !== undefined ? String(subs[idx]) : '');
+          }
+        }
+        return text;
+      }
+
+      const isRu = lang === 'ru';
+      const names = isRu
+        ? { home: 'Дом', work: 'Работа', project: 'Ремонт кухни' }
+        : { home: 'Home', work: 'Work', project: 'Kitchen remodel' };
+      const day = 86400000;
+      const states = {
+        normal: {
+          profiles: [
+            { id: 'pw', name: names.home, count: 14, updated: Date.now() - 2 * day },
+            { id: 'ph', name: names.work, count: 21, updated: Date.now() - 5 * 3600000 },
+            { id: 'pp', name: names.project, count: 6, updated: Date.now() - 9 * day },
+          ],
+          activeId: 'ph',
+          barDiffers: false,
+          barCount: 21,
+          used: 12 * 1024,
+          quota: 102400,
         },
-      },
-      tabs: { create: () => {} },
-      storage: { onChanged: { addListener: () => {} } },
-    };
+        diff: {
+          profiles: [
+            { id: 'pw', name: names.home, count: 14, updated: Date.now() - 2 * day },
+            { id: 'ph', name: names.work, count: 19, updated: Date.now() - 5 * 3600000 },
+          ],
+          activeId: 'ph',
+          barDiffers: true,
+          barCount: 21,
+          used: 12 * 1024,
+          quota: 102400,
+        },
+        empty: {
+          profiles: [],
+          activeId: null,
+          barDiffers: null,
+          barCount: 3,
+          used: 0,
+          quota: 102400,
+        },
+      };
+
+      window.chrome = {
+        i18n: { getMessage, getUILanguage: () => lang },
+        runtime: {
+          getURL: (p) => p,
+          sendMessage: async (m) => {
+            if (m.type === 'getState') return { ok: true, result: states[mode] };
+            return { ok: true, result: { message: getMessage('msgSavedBar') } };
+          },
+        },
+        tabs: { create: () => {} },
+        storage: { onChanged: { addListener: () => {} } },
+      };
+
+      const s = document.createElement('script');
+      s.type = 'module';
+      s.src = '../popup/popup.js';
+      document.head.appendChild(s);
+    })();
   </script>
-  <script type="module" src="../popup/popup.js"></script>
 </body>
 </html>

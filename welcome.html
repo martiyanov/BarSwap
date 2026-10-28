@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Профили закладок — начало работы</title>
+  <title data-i18n="wTitle">Bookmark Profiles — getting started</title>
   <style>
     body {
       max-width: 720px;
@@ -14,7 +14,11 @@
     h1 { font-size: 26px; margin: 0 0 6px; }
     .sub { color: #6b7280; margin: 0 0 28px; }
     h2 { font-size: 17px; margin: 32px 0 8px; }
-    .step { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: #1d4ed8; color: #fff; text-align: center; line-height: 22px; font-size: 13px; margin-right: 6px; }
+    .step {
+      display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+      background: #1d4ed8; color: #fff; text-align: center; line-height: 22px;
+      font-size: 13px; margin-right: 6px; user-select: none;
+    }
     .important {
       background: #fff7e6;
       border: 1px solid #f0c36d;
@@ -34,54 +38,47 @@
   </style>
 </head>
 <body>
-  <h1>Профили закладок</h1>
-  <p class="sub">Несколько наборов закладок на панели: на работе — одни, дома — другие, при одной учётной записи Google.</p>
+  <h1 data-i18n="wH1">Bookmark Profiles</h1>
+  <p class="sub" data-i18n="wSub"></p>
 
-  <h2><span class="step">1</span>Выключите синхронизацию закладок Chrome</h2>
-  <div class="important">
-    Панель закладок Chrome — это одна папка, которую браузер синхронизирует между всеми компьютерами
-    с вашим аккаунтом. Пока эта синхронизация включена, Chrome будет перетаскивать содержимое панели
-    между работой и домом и конфликтовать с расширением.
-  </div>
+  <h2><span class="step">1</span><span data-i18n="wStep1H"></span></h2>
+  <div class="important" data-i18n="wImportant"></div>
   <p>
-    Как выключить: <b>Настройки Chrome</b> (<code>chrome://settings</code>) → <b>«Вы и Google»</b> →
-    <b>«Синхронизация и сервисы Google»</b> → <b>«Управление тем, что вы синхронизируете»</b> →
-    выключите тумблер <b>«Закладки»</b>.
+    <span data-i18n="wHowOffA"></span><code>chrome://settings</code><span data-i18n="wHowOffB"></span>
   </p>
-  <p class="muted">
-    Всё остальное (пароли, история, вкладки, расширения…) продолжит синхронизироваться как раньше.
-    Сами профили закладок тоже не пропадут: они хранятся в хранилище расширения и синхронизируются
-    отдельно от обычных закладок.
-  </p>
+  <p class="muted" data-i18n="wStep1Note"></p>
 
-  <h2><span class="step">2</span>Создайте профили</h2>
+  <h2><span class="step">2</span><span data-i18n="wStep2H"></span></h2>
   <ul>
-    <li>Откройте панель расширения (иконка на панели инструментов).</li>
-    <li>Введите название, например «Работа», и нажмите «Создать» — текущая панель закладок сохранится как профиль.</li>
-    <li>Дома создайте профиль «Дом» из домашней панели.</li>
+    <li data-i18n="wStep2Li1"></li>
+    <li data-i18n="wStep2Li2"></li>
+    <li data-i18n="wStep2Li3"></li>
   </ul>
-  <p class="muted">Профили синхронизируются через аккаунт, поэтому список профилей одинаков на всех компьютерах; а вот какой из них активен — запоминается на каждом компьютере отдельно.</p>
+  <p class="muted" data-i18n="wStep2Note"></p>
 
-  <h2><span class="step">3</span>Переключайте</h2>
+  <h2><span class="step">3</span><span data-i18n="wStep3H"></span></h2>
   <ul>
-    <li>Клик по профилю в списке — панель закладок заменяется его содержимым.</li>
-    <li>Текущая панель при этом автоматически сохраняется в «свой» профиль, так что правки не теряются.</li>
-    <li>Первая буква активного профиля видна на бейдже иконки расширения.</li>
+    <li data-i18n="wStep3Li1"></li>
+    <li data-i18n="wStep3Li2"></li>
+    <li data-i18n="wStep3Li3"></li>
   </ul>
 
-  <h2>Установите расширение на оба компьютера</h2>
+  <h2 data-i18n="wInstallH"></h2>
   <p>
-    Расширения, установленные из папки (не из Web Store), Chrome между компьютерами не синхронизирует.
-    Скопируйте папку расширения на второй компьютер (через Google Drive, флешку и т.п.) и там:
-    <code>chrome://extensions</code> → включите <b>«Режим разработчика»</b> → <b>«Загрузить распакованное расширение»</b> → выберите папку.
+    <span data-i18n="wInstallA"></span><code>chrome://extensions</code><span data-i18n="wInstallB"></span>
   </p>
 
-  <h2>Как это устроено и ограничения</h2>
+  <h2 data-i18n="wInternalH"></h2>
   <ul>
-    <li>Профили хранятся в <code>chrome.storage.sync</code> — синхронизируются вместе с аккаунтом Google. Лимит — около 100 КБ (несколько тысяч закладок); занятый объём виден внизу панели расширения.</li>
-    <li>Активный профиль хранится локально на каждой машине.</li>
-    <li>Расширение никуда не отправляет данные, кроме синхронизации Chrome; не показывает рекламу и не собирает статистику.</li>
-    <li>Есть «Экспорт»/«Импорт» в JSON — для резервных копий.</li>
+    <li data-i18n="wIntLi1"></li>
+    <li data-i18n="wIntLi2"></li>
+    <li data-i18n="wIntLi3"></li>
+    <li data-i18n="wIntLi4"></li>
   </ul>
+
+  <script type="module">
+    import { applyI18n } from './lib/i18n-dom.js';
+    applyI18n();
+  </script>
 </body>
 </html>

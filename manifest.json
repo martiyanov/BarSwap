@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Профили закладок",
+  "default_locale": "en",
+  "name": "__MSG_extName__",
   "version": "1.0.0",
-  "description": "Несколько наборов закладок на панели: на работе — одни, дома — другие, при одной учётной записи Google.",
+  "description": "__MSG_extDesc__",
   "permissions": ["bookmarks", "storage"],
   "background": { "service_worker": "background.js", "type": "module" },
   "action": {
-    "default_title": "Профили закладок",
+    "default_title": "__MSG_extName__",
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

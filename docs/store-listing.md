@@ -1,22 +1,22 @@
 # Публикация в Chrome Web Store — шпаргалка
 
-Всё готово к загрузке. Ниже — готовые тексты (копировать/вставить) и шаги.
+Всё готово к загрузке. Ниже — готовые тексты на двух языках (копировать/вставить) и шаги.
 
 ## Пошагово
 
 1. Откройте [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole) под вашим Google-аккаунтом.
 2. При первом входе: подтвердите согласие с условиями и заплатите **разовый взнос $5** (картой; действует на все будущие расширения).
 3. Кнопка **«+ Новый элемент»** → загрузите файл **`bookmark-profiles-webstore.zip`** (лежит рядом с папкой проекта).
-4. Откроется форма — заполните поля из разделов ниже.
+4. Заполните поля: сначала русский листинг (раздел ниже), затем добавьте английский — в списке полей найдите выбор языка и кнопку добавления языка, вставьте тексты из раздела «English listing».
 5. Внизу формы нажмите **«Отправить на проверку»**. Проверка обычно занимает от нескольких часов до нескольких дней.
-6. После одобрения расширение появится в магазине. Установите его из магазина **на обоих компьютерах** (расширение из магазина синхронизируется с аккаунтом само) и удалите «распакованную» версию, если ставили её.
+6. После одобрения установите расширение из магазина **на обоих компьютерах** (версия из магазина синхронизируется с аккаунтом сама) и удалите «распакованную», если ставили её.
 
-## Поля формы (вкладка «Информация о списке»)
+## Листинг, русский (основной язык)
 
-- **Название (RU):** Профили закладок — работа и дом
-- **Краткое описание (RU, до 132 знаков):**
+- **Название:** Профили закладок — работа и дом
+- **Краткое описание (до 132 знаков):**
   Несколько наборов закладок на панели: на работе — одни, дома — другие, при одной учётной записи. Переключение в один клик.
-- **Подробное описание (RU):**
+- **Подробное описание:**
 
   ```
   Свои закладки на работе, свои — дома, при одном аккаунте Google.
@@ -32,6 +32,7 @@
   • Сохранение/восстановление панели, если вы правили её вручную.
   • Экспорт и импорт профилей в JSON для резервных копий.
   • Первая буква активного профиля — на бейдже иконки.
+  • Интерфейс на русском и английском.
   • Без аналитики, рекламы и доступа к посещаемым страницам.
 
   ВАЖНО после установки: выключите синхронизацию закладок Chrome
@@ -42,18 +43,53 @@
   Открытый исходный код — ссылка на сайт расширения.
   ```
 
-- **Категория:** Инструменты для повышения продуктивности
-- **Язык:** русский
-- **Ссылка на сайт:** URL репозитория на GitHub (после публикации репозитория)
-- **Скриншоты (1280×800):** `docs/screenshots/screenshot-1.png`, `docs/screenshots/screenshot-2.png`
+## English listing (добавить вторым языком в форме)
+
+- **Name:** Bookmark Profiles — work & home
+- **Summary (≤132 chars):**
+  Several bookmark bar sets under one Google account: work links at the office, personal ones at home. One-click switching.
+- **Detailed description:**
+
+  ```
+  Your work bookmarks at the office, your personal ones at home — under a single Google account.
+
+  How it works:
+  • Profiles (bookmark sets) sync with your account and are available on every computer.
+  • Which profile is active is remembered per computer: “Work” at the office, “Home” at home.
+  • On switching, the current bar is automatically saved back to its own profile — nothing is lost.
+
+  Features:
+  • One-click switching of the bookmarks bar.
+  • Rename and delete profiles.
+  • Save/restore the bar if you edited it manually.
+  • JSON export/import for backups.
+  • The first letter of the active profile shows on the icon badge.
+  • UI in English and Russian.
+  • No analytics, no ads, no access to the pages you visit.
+
+  IMPORTANT after install: turn off Chrome's bookmark sync
+  (Settings → “You and Google” → “Sync and Google services” → “Manage what you sync” → toggle “Bookmarks” off).
+  The bookmarks bar is a single synced folder; while the toggle is on, Chrome itself drags its contents between your computers.
+  Everything else (passwords, history, …) keeps syncing as before; the extension's profiles sync separately.
+
+  Open source — see the extension website link.
+  ```
+
+## Общие поля
+
+- **Категория:** Инструменты для повышения продуктивности / Productivity
+- **Скриншоты (1280×800):** набор один на все языки — рекомендую английский:
+  `docs/screenshots/screenshot-en-1.png`, `docs/screenshots/screenshot-en-2.png`.
+  Русская пара лежит рядом (`screenshot-1.png`, `screenshot-2.png`) — если хотите, загрузите её вместо английской.
 - **Иконка 128×128:** `icons/icon128.png`
+- **Ссылка на сайт:** URL репозитория на GitHub (после публикации репозитория)
 - **Промо-изображения:** необязательны (маленькая плитка 440×280 может увеличить показы — можно сгенерировать позже)
 
 ## Вкладка «Конфиденциальность»
 
 - **Обоснование разрешений:**
-  - `bookmarks` — единственное назначение расширения: чтение панели закладок и замена её содержимым выбранного профиля при переключении.
-  - `storage` — сохранение профилей закладок в хранилище расширения (`chrome.storage.sync` — синхронизация через аккаунт Google) и метки активного профиля на устройстве.
+  - `bookmarks` — единственное назначение расширения: чтение панели закладок и замена её содержимым выбранного профиля при переключении. / The extension's single purpose: read the bookmarks bar and replace it with the selected profile's contents on switch.
+  - `storage` — сохранение профилей закладок в хранилище расширения (`chrome.storage.sync` — синхронизация через аккаунт Google) и метки активного профиля на устройстве. / Storing bookmark profiles in extension storage (`chrome.storage.sync`, synced via the Google account) and the per-device active profile flag.
 - **Использование данных** (галочки «собираются/не собираются»):
   - Данные не собираются. Не продаются. Не передаются третьим лицам. Не используются для рекламы/кредитования/идентификации.
   - Расширение не совершает сетевых запросов; код открыт.
@@ -65,15 +101,8 @@
 - **Регионы:** все страны.
 - **Специальные категории:** не применимо.
 
-## English-варианты (если заполните второй язык в списке)
+## Что где лежит
 
-- **Name:** Bookmark Profiles — work & home
-- **Summary (≤132):** Several bookmark bar sets under one Google account: work links at the office, personal links at home. One-click switching.
-- **Description:** перевод подробного описания выше; замените шаг про синхронизацию на: "After install, turn off Chrome's Bookmarks sync datatype (Settings → You and Google → Sync → Manage what you sync) so Chrome itself doesn't drag the bar between your machines."
-
-## English (для этой шпаргалки)
-
-Repeat the steps above; all assets are in this folder:
-- Upload zip: `bookmark-profiles-webstore.zip` (manifest.json at zip root, runtime files only)
-- Screenshots: `docs/screenshots/*.png` (1280×800)
-- Icon: `icons/icon128.png`
+- Upload zip: `bookmark-profiles-webstore.zip` (manifest.json в корне архива, только рабочие файлы + `_locales`)
+- Скриншоты EN: `docs/screenshots/screenshot-en-*.png`; RU: `docs/screenshots/screenshot-[12].png`
+- Иконка: `icons/icon128.png`

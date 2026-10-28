@@ -1,11 +1,14 @@
 // Вся логика переключения живёт здесь, в service worker-е:
 // даже если пользователь закроет попап в середине операции, работа продолжится.
+// Тексты — из _locales (chrome.i18n): английский и русский.
 
 import {
   INDEX_KEY, getIndex, getProfile, saveProfile, deleteProfile,
   getActiveId, setActiveId, countBookmarks,
 } from './lib/store.js';
 import { readBar, applyToBar, sameNodes } from './lib/bookmarks.js';
+
+const msg = (key, subs) => chrome.i18n.getMessage(key, subs);
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   await refreshBadge();
@@ -22,26 +25,26 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.activeProfileId) refreshBadge();
 });
 
-chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-  handle(msg).then(
+chrome.runtime.onMessage.addListener((msgObj, _sender, sendResponse) => {
+  handle(msgObj).then(
     (result) => sendResponse({ ok: true, result }),
     (err) => sendResponse({ ok: false, error: String((err && err.message) || err) }),
   );
   return true; // ответ будет асинхронным
 });
 
-async function handle(msg) {
-  switch (msg.type) {
+async function handle(m) {
+  switch (m.type) {
     case 'getState': return getState();
-    case 'switch': return switchTo(msg.id);
-    case 'create': return createProfile(msg.name);
+    case 'switch': return switchTo(m.id);
+    case 'create': return createProfile(m.name);
     case 'saveActive': return saveActive();
     case 'restoreActive': return restoreActive();
-    case 'delete': return removeProfile(msg.id);
-    case 'rename': return renameProfile(msg.id, msg.name);
+    case 'delete': return removeProfile(m.id);
+    case 'rename': return renameProfile(m.id, m.name);
     case 'export': return exportData();
-    case 'import': return importData(msg.payload);
-    default: throw new Error('Неизвестная команда: ' + msg.type);
+    case 'import': return importData(m.payload);
+    default: throw new Error(msg('errUnknownCommand', [m.type]));
   }
 }
 
@@ -52,9 +55,7 @@ async function getState() {
     .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
 
   let barDiffers = null;
-  let barCount = 0;
   const barNodes = await readBar();
-  barCount = countBookmarks(barNodes);
   if (activeId && index.profiles[activeId]) {
     const active = await getProfile(activeId);
     barDiffers = active ? !sameNodes(barNodes, active.nodes) : null;
@@ -62,19 +63,19 @@ async function getState() {
 
   const quota = chrome.storage.sync.QUOTA_BYTES || 102400;
   const used = await chrome.storage.sync.getBytesInUse(null);
-  return { profiles, activeId: activeId && index.profiles[activeId] ? activeId : null, barDiffers, barCount, used, quota };
+  return { profiles, activeId: activeId && index.profiles[activeId] ? activeId : null, barDiffers, used, quota };
 }
 
 async function switchTo(id) {
   const index = await getIndex();
   const target = index.profiles[id];
-  if (!target) throw new Error('Профиль не найден');
+  if (!target) throw new Error(msg('errProfileNotFound'));
 
   const activeId = await getActiveId();
   if (!activeId || !index.profiles[activeId]) {
-    throw new Error('Панель ещё не привязана к профилю. Сначала создайте профиль из текущей панели — иначе текущим закладкам будет некуда сохраниться.');
+    throw new Error(msg('errNotBound'));
   }
-  if (id === activeId) return { message: 'Этот профиль уже активен' };
+  if (id === activeId) return { message: msg('msgAlreadyActive') };
 
   // Текущая панель — это правки пользователя с момента прошлого переключения:
   // фиксируем её в активный профиль ДО каких-либо изменений панели.
@@ -85,12 +86,12 @@ async function switchTo(id) {
   await applyToBar(profile.nodes);
   await setActiveId(id);
   await refreshBadge();
-  return { message: `Включён профиль «${target.name}»` };
+  return { message: msg('msgSwitched', [target.name]) };
 }
 
 async function createProfile(name) {
   const trimmed = String(name || '').trim();
-  if (!trimmed) throw new Error('Введите название профиля');
+  if (!trimmed) throw new Error(msg('errEnterName'));
 
   const nodes = await readBar();
   const index = await getIndex();
@@ -104,22 +105,22 @@ async function createProfile(name) {
   await saveProfile(id, trimmed, nodes);
   await setActiveId(id);
   await refreshBadge();
-  return { message: `Профиль «${trimmed}» создан из текущей панели` };
+  return { message: msg('msgCreated', [trimmed]) };
 }
 
 async function saveActive() {
   const [index, activeId] = await Promise.all([getIndex(), getActiveId()]);
-  if (!activeId || !index.profiles[activeId]) throw new Error('Нет активного профиля');
+  if (!activeId || !index.profiles[activeId]) throw new Error(msg('errNoActiveProfile'));
   await saveProfile(activeId, index.profiles[activeId].name, await readBar());
-  return { message: 'Текущая панель сохранена в профиль' };
+  return { message: msg('msgSavedBar') };
 }
 
 async function restoreActive() {
   const activeId = await getActiveId();
   const profile = activeId ? await getProfile(activeId) : null;
-  if (!profile) throw new Error('Нет активного профиля');
+  if (!profile) throw new Error(msg('errNoActiveProfile'));
   await applyToBar(profile.nodes);
-  return { message: 'Панель восстановлена из профиля' };
+  return { message: msg('msgRestoredBar') };
 }
 
 async function removeProfile(id) {
@@ -128,16 +129,16 @@ async function removeProfile(id) {
     await setActiveId(null);
     await refreshBadge();
   }
-  return { message: 'Профиль удалён. Содержимое панели не изменилось.' };
+  return { message: msg('msgDeleted') };
 }
 
 async function renameProfile(id, name) {
   const trimmed = String(name || '').trim();
-  if (!trimmed) throw new Error('Название не может быть пустым');
+  if (!trimmed) throw new Error(msg('errNameEmpty'));
   const profile = await getProfile(id);
-  if (!profile) throw new Error('Профиль не найден');
+  if (!profile) throw new Error(msg('errProfileNotFound'));
   await saveProfile(id, trimmed, profile.nodes);
-  return { message: 'Профиль переименован' };
+  return { message: msg('msgRenamed') };
 }
 
 async function exportData() {
@@ -155,17 +156,17 @@ async function importData(text) {
   try {
     data = JSON.parse(text);
   } catch {
-    throw new Error('Файл не похож на JSON');
+    throw new Error(msg('errBadJson'));
   }
   const list = Array.isArray(data.profiles) ? data.profiles : [];
   let n = 0;
   for (const item of list) {
     if (!item || !Array.isArray(item.nodes)) continue;
-    await saveProfile(crypto.randomUUID(), String(item.name || 'Импорт'), item.nodes);
+    await saveProfile(crypto.randomUUID(), String(item.name || 'Import'), item.nodes);
     n++;
   }
-  if (!n) throw new Error('В файле не нашлось профилей');
-  return { message: `Импортировано профилей: ${n}` };
+  if (!n) throw new Error(msg('errNoProfilesInFile'));
+  return { message: msg('msgImported', [String(n)]) };
 }
 
 async function refreshBadge() {

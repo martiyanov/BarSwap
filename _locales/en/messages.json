@@ -1,0 +1,135 @@
+{
+  "extName": {
+    "message": "Bookmark Profiles — work & home"
+  },
+  "extDesc": {
+    "message": "Several bookmark bar sets under one Google account: work links at the office, personal ones at home. One-click switching."
+  },
+
+  "popupH1": { "message": "Bookmark Profiles" },
+  "newNamePlaceholder": { "message": "Name, e.g. “Work”" },
+  "createBtn": { "message": "Create" },
+  "createBtnTitle": { "message": "Save the current bookmarks bar as a profile" },
+  "helpLink": { "message": "How it works" },
+  "exportLink": { "message": "Export" },
+  "importLink": { "message": "Import" },
+
+  "hintFirst": {
+    "message": "Save the current bookmarks bar as your first profile — e.g. “Work” or “Home”. If profiles already exist for this account, they will appear here after Chrome syncs the extension storage."
+  },
+  "hintUnbound": {
+    "message": "The bar is not linked to a profile. To avoid losing your current bookmarks, create a profile from it first — then you can switch freely."
+  },
+  "activeLabel": { "message": "Active:" },
+  "diffText": { "message": "The bar differs from the saved profile." },
+  "diffSaveBtn": { "message": "Save bar to profile" },
+  "diffRestoreBtn": { "message": "Restore profile" },
+  "diffRestoreTitle": { "message": "Overwrite the bar with the profile contents" },
+  "armTitle": { "message": "Click again to confirm" },
+  "metaLine": {
+    "message": "$count$ bookmarks · $date$",
+    "placeholders": {
+      "count": { "content": "$1" },
+      "date": { "content": "$2" }
+    }
+  },
+  "renameTitle": { "message": "Rename" },
+  "deleteTitle": { "message": "Delete profile (the bar stays as is)" },
+  "activeRowTitle": { "message": "Active profile" },
+  "switchRowTitle": { "message": "Switch to this profile" },
+  "errEnterName": { "message": "Enter a profile name" },
+  "errNoResponse": { "message": "No response from the background page" },
+  "errImport": {
+    "message": "Import failed: $err$",
+    "placeholders": { "err": { "content": "$1" } }
+  },
+  "msgExported": { "message": "File saved" },
+  "usageLine": {
+    "message": "Profile storage: $used$ of $quota$ KB",
+    "placeholders": {
+      "used": { "content": "$1" },
+      "quota": { "content": "$2" }
+    }
+  },
+
+  "msgAlreadyActive": { "message": "This profile is already active" },
+  "errNotBound": {
+    "message": "The bar is not linked to a profile yet. Create a profile from the current bar first — otherwise there is nowhere to save these bookmarks."
+  },
+  "msgSwitched": {
+    "message": "Profile “$name$” activated",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "msgCreated": {
+    "message": "Profile “$name$” created from the current bar",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "msgSavedBar": { "message": "Current bar saved to the profile" },
+  "msgRestoredBar": { "message": "Bar restored from the profile" },
+  "msgDeleted": { "message": "Profile deleted. The bar is unchanged." },
+  "errNoActiveProfile": { "message": "No active profile" },
+  "errProfileNotFound": { "message": "Profile not found" },
+  "errNameEmpty": { "message": "The name cannot be empty" },
+  "msgRenamed": { "message": "Profile renamed" },
+  "errBadJson": { "message": "The file does not look like JSON" },
+  "errNoProfilesInFile": { "message": "No profiles found in the file" },
+  "msgImported": {
+    "message": "Profiles imported: $count$",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "errUnknownCommand": {
+    "message": "Unknown command: $cmd$",
+    "placeholders": { "cmd": { "content": "$1" } }
+  },
+  "errBarNotFound": { "message": "Could not find the bookmarks bar" },
+
+  "wTitle": { "message": "Bookmark Profiles — getting started" },
+  "wH1": { "message": "Bookmark Profiles" },
+  "wSub": {
+    "message": "Several bookmark bar sets: work links at the office, personal ones at home — under a single Google account."
+  },
+  "wStep1H": { "message": "Turn off Chrome's bookmark sync" },
+  "wImportant": {
+    "message": "The Chrome bookmarks bar is a single folder that the browser syncs across all computers signed in to your account. While this sync is on, Chrome drags bar contents between work and home and conflicts with the extension."
+  },
+  "wHowOffA": { "message": "To turn it off: open " },
+  "wHowOffB": {
+    "message": " → “You and Google” → “Sync and Google services” → “Manage what you sync” → turn the “Bookmarks” toggle off."
+  },
+  "wStep1Note": {
+    "message": "Everything else (passwords, history, extensions…) keeps syncing as before. Your profiles stay too: they live in extension storage and sync separately from regular bookmarks."
+  },
+  "wStep2H": { "message": "Create profiles" },
+  "wStep2Li1": { "message": "Open the extension popup (the toolbar icon)." },
+  "wStep2Li2": {
+    "message": "Type a name, e.g. “Work”, and click “Create” — the current bookmarks bar is saved as a profile."
+  },
+  "wStep2Li3": { "message": "At home, create a “Home” profile from your personal bar." },
+  "wStep2Note": {
+    "message": "Profiles sync through your account, so the list is the same on every computer; which one is active is remembered on each computer separately."
+  },
+  "wStep3H": { "message": "Switch away" },
+  "wStep3Li1": { "message": "Click a profile in the list — the bookmarks bar is replaced with its contents." },
+  "wStep3Li2": {
+    "message": "The current bar is automatically saved back to its own profile, so nothing is lost."
+  },
+  "wStep3Li3": {
+    "message": "The first letter of the active profile shows on the extension icon badge."
+  },
+  "wInstallH": { "message": "Install the extension on both computers" },
+  "wInstallA": {
+    "message": "If you installed the extension from a folder (not the Web Store), Chrome does not sync it between computers. Copy the folder to the second computer, then open "
+  },
+  "wInstallB": {
+    "message": " → enable “Developer mode” → “Load unpacked” → pick the folder. A version installed from the Chrome Web Store installs everywhere by itself."
+  },
+  "wInternalH": { "message": "How it works and limits" },
+  "wIntLi1": {
+    "message": "Profiles are stored in chrome.storage.sync — synced with your Google account. The limit is about 100 KB (a few thousand bookmarks); usage is shown at the bottom of the popup."
+  },
+  "wIntLi2": { "message": "The active profile is stored locally on each computer." },
+  "wIntLi3": {
+    "message": "The extension sends data nowhere except Chrome sync; no ads, no analytics."
+  },
+  "wIntLi4": { "message": "JSON Export/Import is available for backups." }
+}

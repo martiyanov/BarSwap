@@ -54,15 +54,21 @@
 ## Разработка
 
 ```
-manifest.json      — Manifest V3
+manifest.json      — Manifest V3 (имя и описание локализованы)
+_locales/          — словари en/ru (chrome.i18n)
 background.js      — service worker: вся логика (переключение, профили, бейдж)
 lib/store.js       — профили в chrome.storage.sync (чанками по ~3.5 КБ)
 lib/bookmarks.js   — чтение/замена панели через chrome.bookmarks
+lib/i18n-dom.js    — заполнение data-i18n строк на статичных страницах
 popup/             — интерфейс (только отображение, логика через сообщения)
-welcome.html       — страница-инструкция при установке
+welcome.html       — страница-инструкция при установке (en/ru)
 tools/gen_icons.py — генератор иконок (python3, без зависимостей)
 tools/test.mjs     — тесты логики с моками chrome.* (node tools/test.mjs)
+tools/demo.html    — демо попапа для скриншотов (?state=…&lang=en|ru)
 ```
+
+Интерфейс — на русском и английском: язык подстраивается под язык браузера
+(`chrome.i18n`, словари в `_locales/`).
 
 Тесты: `node tools/test.mjs` — покрывают чанкование хранилища, замену панели
 (вложенность и порядок), изоляцию профилей и сценарий «работа/дом» на двух
@@ -90,4 +96,4 @@ sync). The bookmarks bar is a single synced folder; while that toggle is on,
 Chrome itself fights the extension by dragging bar contents between machines.
 Everything else keeps syncing; profiles sync through extension storage.
 
-MIT License — see [LICENSE](LICENSE). Privacy — see [PRIVACY.md](PRIVACY.md).
+MIT License — see [LICENSE](LICENSE). Privacy — see [PRIVACY.md](PRIVACY.md). The UI is localized via `chrome.i18n` (English and Russian).

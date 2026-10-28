@@ -1,13 +1,18 @@
 // Попап — только отображение и кнопки. Вся логика в background.js,
 // поэтому закрытие попапа в середине операции ничего не ломает.
+// Тексты — из _locales (chrome.i18n): английский и русский.
+
+import { applyI18n } from '../lib/i18n-dom.js';
 
 const $ = (id) => document.getElementById(id);
+const msg = (key, subs) => chrome.i18n.getMessage(key, subs);
 
 const state = { data: null, busy: false, armed: {}, renameId: null };
 
 init();
 
 async function init() {
+  applyI18n();
   $('help').addEventListener('click', (e) => {
     e.preventDefault();
     chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
@@ -32,7 +37,7 @@ async function init() {
 
 async function call(type, extra = {}) {
   const res = await chrome.runtime.sendMessage({ type, ...extra });
-  if (!res || !res.ok) throw new Error((res && res.error) || 'Нет ответа от фоновой страницы');
+  if (!res || !res.ok) throw new Error((res && res.error) || msg('errNoResponse'));
   return res.result;
 }
 
@@ -75,21 +80,21 @@ function renderStatus(d) {
 
   if (!d.profiles.length) {
     const hint = div('hint');
-    hint.textContent = 'Сохраните текущую панель закладок как первый профиль — например «Работа» или «Дом». Если на этом компьютере уже есть профили, они появятся после входа в тот же аккаунт Google.';
+    hint.textContent = msg('hintFirst');
     el.appendChild(hint);
     return;
   }
 
   if (!d.activeId) {
     const hint = div('hint warn');
-    hint.textContent = 'Панель не привязана к профилю. Чтобы не потерять текущие закладки, сначала создайте из них профиль — потом можно переключаться.';
+    hint.textContent = msg('hintUnbound');
     el.appendChild(hint);
     return;
   }
 
   const active = d.profiles.find((p) => p.id === d.activeId);
   const line = div('active-line');
-  line.append('Активен: ');
+  line.append(msg('activeLabel') + ' ');
   const b = document.createElement('b');
   b.textContent = active ? active.name : '—';
   line.appendChild(b);
@@ -98,10 +103,10 @@ function renderStatus(d) {
   if (d.barDiffers) {
     const box = div('diff');
     const text = span('diff-text');
-    text.textContent = 'Панель отличается от сохранённого профиля.';
-    const save = button('primary', 'Сохранить панель в профиль');
-    const restore = button('danger', 'Восстановить профиль');
-    restore.title = 'Перезаписать панель содержимым профиля';
+    text.textContent = msg('diffText');
+    const save = button('primary', msg('diffSaveBtn'));
+    const restore = button('danger', msg('diffRestoreBtn'));
+    restore.title = msg('diffRestoreTitle');
     save.addEventListener('click', () => act('saveActive'));
     restore.addEventListener('click', () => arm('restore', restore, () => act('restoreActive')));
     box.append(text, save, restore);
@@ -142,14 +147,14 @@ function renderList(d) {
       const nameEl = span('name');
       nameEl.textContent = p.name;
       const metaEl = span('meta');
-      metaEl.textContent = `${p.count} закл. · ${fmtDate(p.updated)}`;
-      main.title = p.id === d.activeId ? 'Активный профиль' : 'Переключиться на этот профиль';
+      metaEl.textContent = msg('metaLine', [String(p.count), fmtDate(p.updated)]);
+      main.title = p.id === d.activeId ? msg('activeRowTitle') : msg('switchRowTitle');
       main.append(nameEl, metaEl);
       main.addEventListener('click', () => { if (p.id !== d.activeId) act('switch', { id: p.id }); });
 
       const renameBtn = button('icon');
       renameBtn.textContent = '✎';
-      renameBtn.title = 'Переименовать';
+      renameBtn.title = msg('renameTitle');
       renameBtn.addEventListener('click', () => {
         state.renameId = p.id;
         render();
@@ -159,7 +164,7 @@ function renderList(d) {
 
       const delBtn = button('icon del');
       delBtn.textContent = '🗑';
-      delBtn.title = 'Удалить профиль (панель не изменится)';
+      delBtn.title = msg('deleteTitle');
       delBtn.addEventListener('click', () => arm('del:' + p.id, delBtn, () => act('delete', { id: p.id })));
 
       li.append(main, renameBtn, delBtn);
@@ -172,7 +177,7 @@ function renderUsage(d) {
   const el = $('usage');
   const kb = Math.max(0, Math.round(d.used / 1024));
   const quotaKb = Math.round(d.quota / 1024);
-  el.textContent = `Хранилище профилей: ${kb} из ${quotaKb} КБ`;
+  el.textContent = msg('usageLine', [String(kb), String(quotaKb)]);
   el.classList.toggle('warn', d.used > d.quota * 0.9);
 }
 
@@ -180,7 +185,7 @@ async function onCreate() {
   const input = $('newName');
   const name = input.value.trim();
   if (!name) {
-    flash('Введите название профиля', true);
+    flash(msg('errEnterName'), true);
     input.focus();
     return;
   }
@@ -195,12 +200,12 @@ async function onExport() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'профили-закладок.json';
+    a.download = 'bookmark-profiles.json';
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    flash('Файл сохранён');
+    flash(msg('msgExported'));
   } catch (e) {
     flash(e.message, true);
   }
@@ -213,7 +218,7 @@ async function onImport(e) {
   try {
     await act('import', { payload: await file.text() });
   } catch (err) {
-    flash('Не удалось импортировать: ' + err.message, true);
+    flash(msg('errImport', [err.message]), true);
   }
 }
 
@@ -228,7 +233,7 @@ function arm(key, el, fn) {
   } else {
     state.armed[key] = now;
     el.classList.add('armed');
-    el.title = 'Нажмите ещё раз для подтверждения';
+    el.title = msg('armTitle');
     setTimeout(() => {
       if (state.armed[key] === now) delete state.armed[key];
       el.classList.remove('armed');
@@ -251,7 +256,7 @@ function flash(text, isErr = false) {
 }
 
 function fmtDate(ts) {
-  return new Date(ts).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+  return new Date(ts).toLocaleDateString(chrome.i18n.getUILanguage(), { day: 'numeric', month: 'short' });
 }
 
 function div(className) {
