@@ -124,13 +124,20 @@ await test('applyToBar заменяет панель целиком, поряд�
   assert.equal((await chrome.bookmarks.getTree())[0].children[1].children.length, 0, 'другие закладки не тронуты');
 });
 
-await test('saveProfile/getProfile: много раундов, включая превышение лимита ключа', async () => {
-  const nodes = makeNodes('тест', 300); // ~180 КБ JSON → десятки чанков
+await test('saveProfile/getProfile: сжатие, чанки, уменьшение профиля', async () => {
+  const nodes = makeNodes('тест', 300); // ~180 КБ сырого JSON
+  const json = JSON.stringify(nodes);
   const meta = await store.saveProfile('p1', 'Работа', nodes);
-  assert.ok(meta.chunks > 10, 'ожидались десятки чанков, вышло ' + meta.chunks);
+  assert.ok(meta.chunks >= 2, 'ожидались несколько чанков, вышло ' + meta.chunks);
   assert.equal(meta.count, 300);
   const loaded = await store.getProfile('p1');
   assert.deepEqual(loaded.nodes, nodes);
+
+  // сжатие реально экономит место: чанки в сумме заметно меньше сырого JSON
+  const storedBytes = [...chrome.storage.sync._map.keys()]
+    .filter((k) => k.startsWith('p:p1:'))
+    .reduce((acc, k) => acc + chrome.storage.sync._map.get(k).length, 0);
+  assert.ok(storedBytes < json.length / 2, `сжатие слабое: ${storedBytes} vs ${json.length}`);
 
   // уменьшение профиля должно убирать лишние чанки
   const small = makeNodes('мало', 5);
@@ -139,6 +146,27 @@ await test('saveProfile/getProfile: много раундов, включая п
   const leftover = [...chrome.storage.sync._map.keys()].filter((k) => k.startsWith('p:p1:'));
   assert.equal(leftover.length, meta2.chunks, 'хвостовые чанки не удалены');
   assert.deepEqual((await store.getProfile('p1')).nodes, small);
+});
+
+await test('чтение профилей старого формата v1 (несжатый JSON)', async () => {
+  // эмуляция записи профиля версией 1.0.0: сырой JSON по кускам, метка v отсутствует
+  const nodes = [{ t: 'Хабр', u: 'https://habr.com' }, { t: 'Папка', c: [{ t: 'Вики', u: 'https://wikipedia.org' }] }];
+  const json = JSON.stringify(nodes);
+  const mid = Math.ceil(json.length / 2);
+  const chunks = [json.slice(0, mid), json.slice(mid)];
+  const payload = { 'p:old:0': chunks[0], 'p:old:1': chunks[1] };
+  await chrome.storage.sync.set(payload);
+  const index = await store.getIndex();
+  index.profiles.old = { id: 'old', name: 'Старый', chunks: 2, count: 2, updated: Date.now() };
+  await chrome.storage.sync.set({ profilesIndex: index });
+
+  const loaded = await store.getProfile('old');
+  assert.deepEqual(loaded.nodes, nodes, 'v1-профиль должен читаться как есть');
+  // пересохранение переводит его в сжатый v2 и не теряет данные
+  await store.saveProfile('old', 'Старый', loaded.nodes);
+  const meta = (await store.getIndex()).profiles.old;
+  assert.equal(meta.v, 2);
+  assert.deepEqual((await store.getProfile('old')).nodes, nodes);
 });
 
 await test('профили не смешиваются, удаление чистит все ключи', async () => {
@@ -212,4 +240,4 @@ await test('сценарий пользователя: работа/дом на 
   assert.deepEqual(await bm.readBar(), home);
 });
 
-console.log(passed === 6 ? '\nВсе тесты пройдены ✔' : '\nЕсть падения ✘');
+console.log(passed === 7 ? '\nВсе тесты пройдены ✔' : '\nЕсть падения ✘');

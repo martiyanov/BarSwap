@@ -82,6 +82,9 @@
     "placeholders": { "cmd": { "content": "$1" } }
   },
   "errBarNotFound": { "message": "Could not find the bookmarks bar" },
+  "errQuota": {
+    "message": "Not enough space in the synced profile storage (~100 KB limit for all profiles). Delete unneeded profiles or reduce the number of bookmarks in them."
+  },
 
   "wTitle": { "message": "BarSwap — getting started" },
   "wH1": { "message": "BarSwap" },
@@ -125,7 +128,7 @@
   },
   "wInternalH": { "message": "How it works and limits" },
   "wIntLi1": {
-    "message": "Profiles are stored in chrome.storage.sync — synced with your Google account. The limit is about 100 KB (a few thousand bookmarks); usage is shown at the bottom of the popup."
+    "message": "Profiles are stored in chrome.storage.sync — synced with your Google account. The data is compressed; the limit is about 100 KB across all profiles (roughly 1,000–1,500 bookmarks in total). Usage is shown at the bottom of the popup."
   },
   "wIntLi2": { "message": "The active profile is stored locally on each computer." },
   "wIntLi3": {

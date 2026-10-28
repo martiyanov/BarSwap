@@ -28,7 +28,11 @@ chrome.storage.onChanged.addListener((changes, area) => {
 chrome.runtime.onMessage.addListener((msgObj, _sender, sendResponse) => {
   handle(msgObj).then(
     (result) => sendResponse({ ok: true, result }),
-    (err) => sendResponse({ ok: false, error: String((err && err.message) || err) }),
+    (err) => {
+      const raw = String((err && err.message) || err);
+      const error = /quota/i.test(raw) ? chrome.i18n.getMessage('errQuota') : raw;
+      sendResponse({ ok: false, error });
+    },
   );
   return true; // ответ будет асинхронным
 });
